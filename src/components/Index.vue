@@ -13,8 +13,10 @@
                 {{article.createDate}} &nbsp;&nbsp; By {{article.author}} &nbsp;&nbsp;<{{article.category}}>&nbsp;&nbsp;阅读量：{{article.reads}}
             </div>
         </div>
-        <Page :total="100" :v-model="page" style="margin-top:20px;text-align:left"></Page>
+        <Page :total="paging.total" :current="paging.page" :page-size="paging.pageSize" @on-change="pageChange" @on-page-size-change="pageSizeChange" show-sizer style="margin-top:20px;text-align:left"></Page>
+        <Back-top></Back-top>
     </div>
+    
 </template>
 
 <script>
@@ -23,18 +25,60 @@
         data() {
             return {
                 articles: [],
-                page:1
+                paging:{
+                    page:1,
+                    total:0,
+                    pageSize:10
+                },
+                
             }
         },
         mounted: function() {
+            this.$Loading.start();
             var _this = this;
             this.$nextTick(function() {
-                this.$http.get('http://www.vertxjava.com/api/index/article/listByPage?page='+this.page).then(response => {
+                this.$http.get('http://www.vertxjava.com/api/index/article/listByPage?page='+this.paging.page+"&pageSize="+this.paging.pageSize).then(response => {
                     _this.articles = response.data;
+                     this.$Loading.finish();
+                     document.body.scrollTop = 0
+                     document.documentElement.scrollTop = 0
                 }, error => {
-                    //alert("报错了");
+                   this.$Loading.error();
+                });
+
+                this.$http.get('http://www.vertxjava.com/api/index/article/count').then(response => {
+                    _this.paging.total = response.data.count;
+                     this.$Loading.finish();
+                     document.body.scrollTop = 0
+                     document.documentElement.scrollTop = 0
+                }, error => {
+                   this.$Loading.error();
                 });
             })
+        },
+        methods: {
+            pageChange (page) {
+                this.paging.page = page;
+                this.$http.get('http://www.vertxjava.com/api/index/article/listByPage?page='+this.paging.page+"&pageSize="+this.paging.pageSize).then(response => {
+                     this.articles = response.data;
+                     this.$Loading.finish();
+                     document.body.scrollTop = 0
+                     document.documentElement.scrollTop = 0
+                }, error => {
+                    this.$Loading.error();
+                });
+            },
+            pageSizeChange(pageSize){
+                this.paging.pageSize = pageSize;
+                this.$http.get('http://www.vertxjava.com/api/index/article/listByPage?page='+this.paging.page+"&pageSize="+this.paging.pageSize).then(response => {
+                     this.articles = response.data;
+                     this.$Loading.finish();
+                     document.body.scrollTop = 0
+                     document.documentElement.scrollTop = 0
+                }, error => {
+                    this.$Loading.error();
+                });
+            }
         }
     }
 </script>

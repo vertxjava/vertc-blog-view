@@ -17,5 +17,12 @@ new Vue({
   el: '#app',
   router,
   template: '<App/>',
-  components: { App }
+  components: { App },
+  mounted:function (){
+    this.$Loading.config({
+      color: '#ff9900',
+      failedColor: '#f0ad4e',
+      height: 5
+  });
+  }
 })

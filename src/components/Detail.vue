@@ -1,5 +1,5 @@
 <template>
-    <div id="articleDetail" style="border:1px solid #d7dde4">
+    <div id="articleDetail" style="border:1px solid #d7dde4;min-height:300px;">
          <div style="width:100%;height:80px;border-bottom:1px solid #e3e8ee;margin-bottom:10px;">
             <div style="width:100%;height:50px;line-height:50px;font-size:24px;font-weight:bolder;">{{article.title}}</div>
             <div style="width:100%;height:30px;color: #aaaaaa;font-size:13px;">
@@ -7,6 +7,7 @@
             </div>
          </div>
         <textarea style="display:none;"></textarea>
+        <Back-top></Back-top>
     </div>
 </template>
     
@@ -14,14 +15,18 @@
     export default {
         data() {
             return {
-                article:''
+                article:'',
+                spinShow: true
             }
         },
         mounted: function() {
+            this.$Loading.start();
             var _this = this;
             this.$nextTick(function() {
                 this.$http.get('http://www.vertxjava.com/api/index/article/detail?id='+this.$route.query.id).then(response => {
                     _this.article = response.data;
+                    this.$Loading.finish();
+                    _this.spinShow= false;
                     editormd.markdownToHTML("articleDetail", {
                         markdown: response.data.content, //+ "\r\n" + $("#append-test").text(),
                         //htmlDecode      : true,       // 开启 HTML 标签解析，为了安全性，默认不开启
@@ -47,5 +52,4 @@
 </script>
 
 <style>
-
 </style>

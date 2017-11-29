@@ -22,22 +22,7 @@
 
 <script>
   export default {
-    name: 'ArticleList',
-        data() {
-            return {
-                articles: []
-            }
-        },
-        mounted: function() {
-            var _this = this;
-            this.$nextTick(function() {
-                this.$http.get('http://www.vertxjava.com/api/index/article/listByPage?page=1').then(response => {
-                    _this.articles = response.data;
-                }, error => {
-                    //alert("报错了");
-                });
-            })
-        }
+    
   }
 </script>
 
