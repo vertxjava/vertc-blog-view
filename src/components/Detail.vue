@@ -46,6 +46,11 @@
                 }, error => {
                     //alert("报错了");
                 });
+                this.$http.get('http://www.vertxjava.com/api/index/article/read?id='+this.$route.query.id).then(response => {
+                    
+                }, error => {
+                    //alert("报错了");
+                });
             })
         }
     }

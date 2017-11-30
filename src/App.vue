@@ -8,29 +8,8 @@
         <router-link :to="{path:'/'}" style="color:#cccccc">Vertc | BLOG</router-link>
       </div>
     </div>
-    <div class="layout-type">
-      <div style="width:100%;height:auto;background-color:#ffffff;">
-        <Row style="background:#eee;padding:0px;text-align:left">
-          <i-col span="24">
-            <Card>
-              <p slot="title">文章分类</p>
-              
-            </Card>
-          </i-col>
-        </Row>
-      </div>
-      <div style="width:100%;height:auto;background-color:#ffffff;margin-top:10px;">
-        <Card style="width:240px">
-        <div>
-            <img src="http://ovfz2ppts.bkt.clouddn.com/2017/8/31/wzq.png" style="width:100%">
-        </div>
-        <div style="width:100%;height:30px;line-height:30px;font-size:18px;">
-          Jack
-        </div>
-    </Card>
-      </div>
-    </div>
-    <div style="min-height: 800px;padding:30px 300px 30px 50px;">
+    
+    <div style="min-height: 800px;padding:30px 300px 30px 30px;">
       <router-view />
     </div>
     <div class="layout-copy">
@@ -40,25 +19,18 @@
 </template>
 
 <script>
-  export default {}
+  export default {  
+  }
 </script>
 
 <style>
-.ivu-card-body{
-  padding: 0;
-}
+  .ivu-card-body {
+    padding: 0;
+  }
   .layout {
     background: #f5f7f9;
     position: relative;
     overflow: hidden;
-  }
-  .layout-type {
-    width: 240px;
-    min-height: 800px;
-    float: left;
-    position: absolute;
-    top: 90px;
-    right: 30px;
   }
   .layout-header {
     height: 60px;
