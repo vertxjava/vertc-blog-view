@@ -1,5 +1,8 @@
 <template>
     <div>
+        <div class="category">
+            当前分类：{{category==''?'全部':category}} &nbsp;<span v-if="category != ''" v-on:click="clearCategory()"><Icon class="clear_category" type="close-round"></Icon></span>
+        </div>
         <div v-for="article in articles" class="vb-article">
             <div class="vb-article-title">
                 <router-link class="vb-article-title_link" :to="{path:'/detail',query: {id: article.id}}">
@@ -47,154 +50,212 @@
 </template>
 
 <script>
-    export default {
-        name: 'ArticleList',
-        data() {
-            return {
-                articles: [],
-                categoryCounts: [],
-                paging: {
-                    page: 1,
-                    total: 0,
-                    pageSize: 10
-                },
-                category:''
-            }
+export default {
+  name: "ArticleList",
+  data() {
+    return {
+      articles: [],
+      categoryCounts: [],
+      paging: {
+        page: 1,
+        total: 0,
+        pageSize: 10
+      },
+      category: ""
+    };
+  },
+  mounted: function() {
+    this.$Loading.start();
+    var _this = this;
+    this.$nextTick(function() {
+      this.$http.get(this.getRequestUrl()).then(
+        response => {
+          _this.articles = response.data;
+          this.$Loading.finish();
+          document.body.scrollTop = 0;
+          document.documentElement.scrollTop = 0;
         },
-        mounted: function() {
-            this.$Loading.start();
-            var _this = this;
-            this.$nextTick(function() {
-                this.$http.get('http://www.vertxjava.com/api/index/article/listByPage?page=' + this.paging.page + "&pageSize=" + this.paging.pageSize+"&category="+this.category).then(response => {
-                    _this.articles = response.data;
-                    this.$Loading.finish();
-                    document.body.scrollTop = 0
-                    document.documentElement.scrollTop = 0
-                }, error => {
-                    this.$Loading.error();
-                });
-                this.$http.get('http://www.vertxjava.com/api/index/article/count').then(response => {
-                    _this.paging.total = response.data.count;
-                    this.$Loading.finish();
-                    document.body.scrollTop = 0
-                    document.documentElement.scrollTop = 0
-                }, error => {
-                    this.$Loading.error();
-                });
-            })
-            this.$http.get('http://www.vertxjava.com/api/index/article/categoryCount').then(response => {
-                _this.categoryCounts = response.data;
-            }, error => {});
-        },
-        methods: {
-            pageChange(page) {
-                this.paging.page = page;
-                this.$http.get('http://www.vertxjava.com/api/index/article/listByPage?page=' + this.paging.page + "&pageSize=" + this.paging.pageSize+"&category="+this.category).then(response => {
-                    this.articles = response.data;
-                    this.$Loading.finish();
-                    document.body.scrollTop = 0
-                    document.documentElement.scrollTop = 0
-                }, error => {
-                    this.$Loading.error();
-                });
-            },
-            pageSizeChange(pageSize) {
-                this.paging.pageSize = pageSize;
-                this.$http.get('http://www.vertxjava.com/api/index/article/listByPage?page=' + this.paging.page + "&pageSize=" + this.paging.pageSize+"&category="+this.category).then(response => {
-                    this.articles = response.data;
-                    this.$Loading.finish();
-                    document.body.scrollTop = 0
-                    document.documentElement.scrollTop = 0
-                }, error => {
-                    this.$Loading.error();
-                });
-            },
-            chooseCategory(category){
-                this.category = category;
-                this.$http.get('http://www.vertxjava.com/api/index/article/listByPage?page=' + this.paging.page + "&pageSize=" + this.paging.pageSize+"&category="+this.category).then(response => {
-                    this.articles = response.data;
-                    this.$Loading.finish();
-                    document.body.scrollTop = 0
-                    document.documentElement.scrollTop = 0
-                }, error => {
-                    this.$Loading.error();
-                });
-            }
+        error => {
+          this.$Loading.error();
         }
+      );
+      this.$http.get("http://www.vertxjava.com/api/index/article/count").then(
+        response => {
+          _this.paging.total = response.data.count;
+          this.$Loading.finish();
+          document.body.scrollTop = 0;
+          document.documentElement.scrollTop = 0;
+        },
+        error => {
+          this.$Loading.error();
+        }
+      );
+    });
+    this.$http
+      .get("http://www.vertxjava.com/api/index/article/categoryCount")
+      .then(
+        response => {
+          _this.categoryCounts = response.data;
+        },
+        error => {}
+      );
+  },
+  methods: {
+    getRequestUrl() {
+      return (
+        "http://www.vertxjava.com/api/index/article/listByPage?page=" +
+        this.paging.page +
+        "&pageSize=" +
+        this.paging.pageSize +
+        "&category=" +
+        this.category
+      );
+    },
+    pageChange(page) {
+      this.paging.page = page;
+      this.$http.get(this.getRequestUrl()).then(
+        response => {
+          this.articles = response.data;
+          this.$Loading.finish();
+          document.body.scrollTop = 0;
+          document.documentElement.scrollTop = 0;
+        },
+        error => {
+          this.$Loading.error();
+        }
+      );
+    },
+    pageSizeChange(pageSize) {
+      this.paging.pageSize = pageSize;
+      this.$http.get(this.getRequestUrl()).then(
+        response => {
+          this.articles = response.data;
+          this.$Loading.finish();
+          document.body.scrollTop = 0;
+          document.documentElement.scrollTop = 0;
+        },
+        error => {
+          this.$Loading.error();
+        }
+      );
+    },
+    chooseCategory(category) {
+      this.category = category;
+      this.$http.get(this.getRequestUrl()).then(
+        response => {
+          this.articles = response.data;
+          this.$Loading.finish();
+          document.body.scrollTop = 0;
+          document.documentElement.scrollTop = 0;
+        },
+        error => {
+          this.$Loading.error();
+        }
+      );
+    },
+    clearCategory() {
+      this.category = "";
+      this.$http.get(this.getRequestUrl()).then(
+        response => {
+          this.articles = response.data;
+          this.$Loading.finish();
+          document.body.scrollTop = 0;
+          document.documentElement.scrollTop = 0;
+        },
+        error => {
+          this.$Loading.error();
+        }
+      );
     }
+  }
+};
 </script>
     
 <style>
-    .layout-type {
-        width: 240px;
-        min-height: 800px;
-        float: left;
-        position: absolute;
-        top: 90px;
-        right: 30px;
-    }
-    .vb-article {
-        width: 800px;
-        min-height: 100px;
-        border-bottom: 1px solid #cccccc;
-        background-color: #ffffff;
-        padding: 5px 5px 5px 20px;
-    }
-    .vb-article-title {
-        width: 100%;
-        height: 40px;
-        line-height: 40px;
-        font-size: 20px;
-        cursor: pointer;
-    }
-    .vb-article-title_link {
-        color: #333333;
-    }
-    .vb-article-title_link:hover {
-        color: #ca0c16;
-    }
-    .vb-article-desc {
-        width: 100%;
-        min-height: 30px;
-        line-height: 30px;
-        font-size: 14px;
-        color: #333333;
-    }
-    .vb-article-other {
-        width: 100%;
-        height: 30px;
-        line-height: 30px;
-        font-size: 13px;
-        color: #aaaaaa
-    }
-    .vb-article {
-        width: 100%;
-        min-height: 100px;
-        border-bottom: 1px solid #cccccc;
-        text-align: left;
-    }
-    .vb-article-title {
-        width: 100%;
-        height: 40px;
-        line-height: 40px;
-        font-size: 20px;
-        cursor: pointer;
-    }
-    .vb-article-title:hover {
-        color: #ca0c16;
-    }
-    .vb-article-desc {
-        width: 100%;
-        min-height: 30px;
-        line-height: 30px;
-        font-size: 14px;
-        color: #333333;
-    }
-    .vb-article-other {
-        width: 100%;
-        height: 30px;
-        line-height: 30px;
-        font-size: 13px;
-        color: #aaaaaa
-    }
+.category {
+  width: 100%;
+  height: 40px;
+  color: #657180;
+  background-color: #ffffff;
+  border-bottom: 2px solid #e3e8ee;
+  line-height: 40px;
+  text-align: left;
+  padding-left: 10px;
+  cursor: pointer;
+}
+.clear_category:hover{
+    color:#3399ff;
+}
+.layout-type {
+  width: 240px;
+  min-height: 800px;
+  float: left;
+  position: absolute;
+  top: 90px;
+  right: 30px;
+}
+.vb-article {
+  width: 800px;
+  min-height: 100px;
+  border-bottom: 1px solid #cccccc;
+  background-color: #ffffff;
+  padding: 5px 5px 5px 20px;
+}
+.vb-article-title {
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  font-size: 20px;
+  cursor: pointer;
+}
+.vb-article-title_link {
+  color: #333333;
+}
+.vb-article-title_link:hover {
+  color: #ca0c16;
+}
+.vb-article-desc {
+  width: 100%;
+  min-height: 30px;
+  line-height: 30px;
+  font-size: 14px;
+  color: #333333;
+}
+.vb-article-other {
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  font-size: 13px;
+  color: #aaaaaa;
+}
+.vb-article {
+  width: 100%;
+  min-height: 100px;
+  border-bottom: 1px solid #cccccc;
+  text-align: left;
+}
+.vb-article-title {
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  font-size: 20px;
+  cursor: pointer;
+}
+.vb-article-title:hover {
+  color: #ca0c16;
+}
+.vb-article-desc {
+  width: 100%;
+  min-height: 30px;
+  line-height: 30px;
+  font-size: 14px;
+  color: #333333;
+}
+.vb-article-other {
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  font-size: 13px;
+  color: #aaaaaa;
+}
 </style>
